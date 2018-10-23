@@ -15,7 +15,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { scaleTime, scaleUtc } from "d3-scale";
 import { TimeRange } from "pondjs";
-import { areComponentsEqual } from "react-hot-loader";
 
 import Brush from "./Brush";
 import MultiBrush from "./MultiBrush";
@@ -177,7 +176,7 @@ export default class ChartContainer extends React.Component {
         //
 
         React.Children.forEach(this.props.children, childRow => {
-            if (areComponentsEqual(childRow.type, ChartRow)) {
+            if (childRow.type === ChartRow) {
                 //
                 // Within this row, count the number of columns that will be
                 // left and right of the Charts tag, as well as the total number
@@ -190,13 +189,10 @@ export default class ChartContainer extends React.Component {
 
                 React.Children.forEach(childRow.props.children, child => {
                     if (child === null) return;
-                    if (areComponentsEqual(child.type, Charts)) {
+                    if (child.type === Charts) {
                         countCharts += 1;
                         align = "right";
-                    } else if (
-                        !areComponentsEqual(child.type, Brush) &&
-                        !areComponentsEqual(child.type, MultiBrush)
-                    ) {
+                    } else if (child.type !== Brush && child.type !== MultiBrush) {
                         if (align === "left") {
                             countLeft += 1;
                         }
@@ -214,11 +210,11 @@ export default class ChartContainer extends React.Component {
                 React.Children.forEach(childRow.props.children, child => {
                     if (child === null) return;
                     if (
-                        areComponentsEqual(child.type, Charts) ||
-                        areComponentsEqual(child.type, Brush) ||
-                        areComponentsEqual(child.type, MultiBrush)
+                        child.type === Charts ||
+                        child.type === Brush ||
+                        child.type === MultiBrush
                     ) {
-                        if (areComponentsEqual(child.type, Charts)) {
+                        if (child.type === Charts) {
                             align = "right";
                             pos = 0;
                         }
@@ -306,7 +302,7 @@ export default class ChartContainer extends React.Component {
         //yPosition += titleHeight;
         let chartsHeight = 0;
         React.Children.forEach(this.props.children, child => {
-            if (areComponentsEqual(child.type, ChartRow)) {
+            if (child.type === ChartRow) {
                 const chartRow = child;
                 const rowKey = `chart-row-row-${i}`;
                 const firstRow = i === 0;

@@ -13,7 +13,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { easeSinOut } from "d3-ease";
 import { scaleLinear, scaleLog, scalePow } from "d3-scale";
-import { areComponentsEqual } from "react-hot-loader";
 
 import Brush from "./Brush";
 import YAxis from "./YAxis";
@@ -94,8 +93,7 @@ export default class ChartRow extends React.Component {
     }
 
     isChildYAxis = child =>
-        areComponentsEqual(child.type, YAxis) ||
-        (_.has(child.props, "min") && _.has(child.props, "max"));
+        child.type === YAxis || (_.has(child.props, "min") && _.has(child.props, "max"));
 
     updateScales(props) {
         const innerHeight = +props.height - AXIS_MARGIN * 2;
@@ -183,7 +181,7 @@ export default class ChartRow extends React.Component {
         let alignLeft = true;
         React.Children.forEach(this.props.children, child => {
             if (child === null) return;
-            if (areComponentsEqual(child.type, Charts)) {
+            if (child.type === Charts) {
                 alignLeft = false;
             } else {
                 const id = child.props.id;
@@ -309,7 +307,7 @@ export default class ChartRow extends React.Component {
         let keyCount = 0;
         React.Children.forEach(this.props.children, child => {
             if (child === null) return;
-            if (areComponentsEqual(child.type, Charts)) {
+            if (child.type === Charts) {
                 const charts = child;
                 React.Children.forEach(charts.props.children, chart => {
                     if (!_.has(chart.props, "visible") || chart.props.visible) {
@@ -358,17 +356,14 @@ export default class ChartRow extends React.Component {
         keyCount = 0;
         React.Children.forEach(this.props.children, child => {
             if (child === null) return;
-            if (
-                areComponentsEqual(child.type, Brush) ||
-                areComponentsEqual(child.type, MultiBrush)
-            ) {
+            if (child.type === Brush || child.type === MultiBrush) {
                 const brushProps = {
                     key: `brush-${keyCount}`,
                     width: chartWidth,
                     height: innerHeight,
                     timeScale: this.props.timeScale
                 };
-                if (areComponentsEqual(child.type, Brush)) {
+                if (child.type === Brush) {
                     brushList.push(React.cloneElement(child, brushProps));
                 } else {
                     multiBrushList.push(React.cloneElement(child, brushProps));
